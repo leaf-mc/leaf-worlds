@@ -6,7 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
@@ -37,7 +39,8 @@ public class WorldListeners extends LeafListener {
             ItemMeta meta = event.getItem().getItemMeta();
             if (meta instanceof PotionMeta potion && potion.getBasePotionData().getType() == PotionType.MUNDANE) {
 
-                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, TELEPORTATION_TIMEOUT * 20, 5));
+                event.getPlayer()
+                        .addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, TELEPORTATION_TIMEOUT * 2, 5));
                 event.getPlayer().sendMessage("You took the Isekai potion...");
 
                 Bukkit.getScheduler().runTaskLater(this.module.getPlugin(), () -> {
@@ -54,13 +57,28 @@ public class WorldListeners extends LeafListener {
 
 
                     event.getPlayer().teleport(block.getLocation().add(0, 1, 0));
-                    event.getPlayer().removePotionEffect(PotionEffectType.CONFUSION);
 
                 }, TELEPORTATION_TIMEOUT);
             }
         }
     }
 
+    @Override
+    public void onPlayerJoin(PlayerJoinEvent event) {
+
+        event.getPlayer().sendMessage("You are in the world §a" + event.getPlayer().getWorld().getName());
+    }
+
+    @Override
+    public void onPlayerDeath(PlayerDeathEvent event) {
+
+        if (event.getPlayer().getWorld().getName().equals("mining")) {
+            event.setKeepInventory(true);
+            event.setKeepLevel(true);
+            event.getDrops().clear();
+            event.setDroppedExp(0);
+        }
+    }
 
     private String getDefaultWorld() {
 
