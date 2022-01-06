@@ -1,0 +1,9 @@
+name: LeafWorlds
+version: '${version}'
+main: mc.leaf.modules.worlds.LeafWorlds
+api-version: 1.18
+prefix: LeafWorlds
+depend: [ LeafCore ]
+authors: [ alexpado ]
+description: Create a mining world
+website: https://github.com/alexpado
